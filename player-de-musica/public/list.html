@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Músicas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 min-h-screen p-6">
+    <div class="max-w-4xl mx-auto">
+        <!-- Cabeçalho -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-white mb-2">Minha Biblioteca de Músicas</h1>
+            <p class="text-gray-400">Todas as suas músicas em um só lugar</p>
+        </div>
+
+        <!-- Botão para voltar -->
+        <div class="mb-6">
+            <a href="index.html" class="inline-flex items-center text-red-600 hover:text-red-500">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                </svg>
+                Voltar para o Player
+            </a>
+        </div>
+
+        <!-- Tabela de músicas -->
+        <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-700">
+                    <tr>
+                        <th class="py-3 px-4 text-left text-white font-semibold">Título</th>
+                        <th class="py-3 px-4 text-left text-white font-semibold">Artista</th>
+                        <th class="py-3 px-4 text-left text-white font-semibold">Álbum</th>
+                        <th class="py-3 px-4 text-left text-white font-semibold">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="music-table-body" class="divide-y divide-gray-700">
+                    <!-- As músicas serão carregadas aqui via JavaScript -->
+                    <tr>
+                        <td colspan="4" class="py-8 text-center text-gray-500">
+                            Carregando músicas...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gray-800 p-4 rounded-lg text-center">
+                <p class="text-gray-400 text-sm">Total de Músicas</p>
+                <p id="total-songs" class="text-2xl font-bold text-white">0</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg text-center">
+                <p class="text-gray-400 text-sm">Artistas</p>
+                <p id="total-artists" class="text-2xl font-bold text-white">0</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg text-center">
+                <p class="text-gray-400 text-sm">Álbuns</p>
+                <p id="total-albums" class="text-2xl font-bold text-white">0</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para carregar as músicas da API
+        async function loadSongs() {
+            try {
+                const response = await fetch('http://localhost/player-de-musica/src/list_songs.php');
+                
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar músicas');
+                }
+                
+                const songs = await response.json();
+                displaySongs(songs);
+                updateStatistics(songs);
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('music-table-body').innerHTML = `
+                    <tr>
+                        <td colspan="4" class="py-8 text-center text-red-500">
+                            Erro ao carregar músicas. Verifique se o servidor está rodando.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Função para exibir as músicas na tabela
+        function displaySongs(songs) {
+            const tableBody = document.getElementById('music-table-body');
+            
+            if (songs.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="py-8 text-center text-gray-500">
+                            Nenhuma música encontrada. Adicione algumas músicas!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = songs.map(song => `
+                <tr class="hover:bg-gray-750 transition-colors">
+                    <td class="py-3 px-4 text-white">${song.titulo || 'Sem título'}</td>
+                    <td class="py-3 px-4 text-gray-300">${song.artista || 'Artista desconhecido'}</td>
+                    <td class="py-3 px-4 text-gray-400">${song.album || 'Sem álbum'}</td>
+                    <td class="py-3 px-4">
+                        <button class="text-red-600 hover:text-red-500 p-1 rounded" onclick="playSong('${song.caminho_arquivo || ''}')">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Função para atualizar as estatísticas
+        function updateStatistics(songs) {
+            document.getElementById('total-songs').textContent = songs.length;
+            
+            // Contar artistas únicos
+            const artists = new Set(songs.map(song => song.artista).filter(artist => artist));
+            document.getElementById('total-artists').textContent = artists.size;
+            
+            // Contar álbuns únicos
+            const albums = new Set(songs.map(song => song.album).filter(album => album));
+            document.getElementById('total-albums').textContent = albums.size;
+        }
+
+        // Função para tocar uma música (simulação)
+        function playSong(filePath) {
+            alert(`Tocando música: ${filePath}`);
+            // Em uma implementação real, aqui você integraria com o player de áudio
+        }
+
+        // Carregar as músicas quando a página for carregada
+        document.addEventListener('DOMContentLoaded', loadSongs);
+    </script>
+</body>
+</html>

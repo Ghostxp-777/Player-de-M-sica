@@ -3,123 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Players de Música</title>
+    <title>Meu Player de Música</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 p-6">
-    <h1 class="text-3xl font-bold text-white mb-8 text-center">Minha Coleção de Músicas</h1>
+    <h1 class="text-2xl font-bold text-white mb-6">Minhas Músicas</h1>
     
-    <div class="flex flex-wrap justify-center gap-6">
-        <!-- Player 1 -->
-        <div class="bg-gray-800 p-4 rounded-lg shadow-lg w-72">
-            <div class="flex items-center mb-4">
-                <div class="bg-gray-700 w-16 h-16 rounded-md mr-4 flex-shrink-0">
-                    <svg class="w-8 h-8 m-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-white">Título da Música</h3>
-                    <p class="text-sm text-gray-400">Artista Famoso</p>
-                </div>
+    <!-- Player 1 -->
+    <div class="bg-gray-800 p-4 rounded-lg shadow mb-4 flex items-center justify-between">
+        <div class="flex items-center">
+            <div class="bg-gray-700 w-12 h-12 rounded-md mr-4 flex items-center justify-center">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
+                </svg>
             </div>
-            <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-500">2:45</span>
-                <button class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
-                <span class="text-xs text-gray-500">3:30</span>
+            <div>
+                <h3 class="font-bold text-white">Título da Música</h3>
+                <p class="text-sm text-gray-400">Artista Famoso</p>
             </div>
         </div>
-
-        <!-- Player 2 -->
-        <div class="bg-gray-800 p-4 rounded-lg shadow-lg w-72">
-            <div class="flex items-center mb-4">
-                <div class="bg-gray-700 w-16 h-16 rounded-md mr-4 flex-shrink-0">
-                    <svg class="w-8 h-8 m-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-white">Melodia Suave</h3>
-                    <p class="text-sm text-gray-400">Cantor Calmo</p>
-                </div>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-500">1:15</span>
-                <button class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
-                <span class="text-xs text-gray-500">4:20</span>
-            </div>
-        </div>
-
-        <!-- Player 3 -->
-        <div class="bg-gray-800 p-4 rounded-lg shadow-lg w-72">
-            <div class="flex items-center mb-4">
-                <div class="bg-gray-700 w-16 h-16 rounded-md mr-4 flex-shrink-0">
-                    <svg class="w-8 h-8 m-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-white">Hit do Verão</h3>
-                    <p class="text-sm text-gray-400">Banda Animada</p>
-                </div>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-500">0:45</span>
-                <button class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
-                <span class="text-xs text-gray-500">3:15</span>
-            </div>
-        </div>
+        <button class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
     </div>
 
-    <div class="mt-10 text-center">
-        <h2 class="text-xl font-bold text-white mb-4">Playlists em Destaque</h2>
-        
-        <div class="flex flex-wrap justify-center gap-6">
-            <!-- Playlist 1 -->
-            <div class="bg-black p-4 rounded-lg w-56 hover:bg-gray-800 transition cursor-pointer">
-                <div class="bg-red-600 h-40 rounded-md mb-3 flex items-center justify-center">
-                    <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
-                    </svg>
-                </div>
-                <h3 class="font-bold text-white">Rock Clássico</h3>
-                <p class="text-sm text-gray-400">25 músicas</p>
+    <!-- Player 2 -->
+    <div class="bg-gray-800 p-4 rounded-lg shadow mb-4 flex items-center justify-between">
+        <div class="flex items-center">
+            <div class="bg-gray-700 w-12 h-12 rounded-md mr-4 flex items-center justify-center">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
+                </svg>
             </div>
-
-            <!-- Playlist 2 -->
-            <div class="bg-black p-4 rounded-lg w-56 hover:bg-gray-800 transition cursor-pointer">
-                <div class="bg-red-600 h-40 rounded-md mb-3 flex items-center justify-center">
-                    <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
-                    </svg>
-                </div>
-                <h3 class="font-bold text-white">Eletrônica</h3>
-                <p class="text-sm text-gray-400">18 músicas</p>
-            </div>
-
-            <!-- Playlist 3 -->
-            <div class="bg-black p-4 rounded-lg w-56 hover:bg-gray-800 transition cursor-pointer">
-                <div class="bg-red-600 h-40 rounded-md mb-3 flex items-center justify-center">
-                    <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
-                    </svg>
-                </div>
-                <h3 class="font-bold text-white">MPB</h3>
-                <p class="text-sm text-gray-40">32 músicas</p>
+            <div>
+                <h3 class="font-bold text-white">Melodia Suave</h3>
+                <p class="text-sm text-gray-400">Cantor Calmo</p>
             </div>
         </div>
+        <button class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
     </div>
+
+    <!-- Player 3 -->
+    <div class="bg-gray-800 p-4 rounded-lg shadow mb-4 flex items-center justify-between">
+        <div class="flex items-center">
+            <div class="bg-gray-700 w-12 h-12 rounded-md mr-4 flex items-center justify-center">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="font-bold text-white">Hit do Verão</h3>
+                <p class="text-sm text-gray-400">Banda Animada</p>
+            </div>
+        </div>
+        <button class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Formulário para adicionar música -->
+    <div class="mt-8">
+        <h1 class="text-2xl font-bold text-white mb-4 text-center">Adicionar Música</h1>
+        <form id="add-song-form" class="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <div class="mb-4">
+                <label for="titulo" class="block text-sm font-medium text-white mb-1">Título</label>
+                <input type="text" id="titulo" name="titulo" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" required>
+            </div>
+            <div class="mb-4">
+                <label for="artista" class="block text-sm font-medium text-white mb-1">Artista</label>
+                <input type="text" id="artista" name="artista" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" required>
+            </div>
+            <div class="mb-4">
+                <label for="album" class="block text-sm font-medium text-white mb-1">Álbum</label>
+                <input type="text" id="album" name="album" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white">
+            </div>
+            <div class="mb-4">
+                <label for="caminho" class="block text-sm font-medium text-white mb-1">Caminho do Arquivo</label>
+                <input type="text" id="caminho" name="caminho" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" required>
+            </div>
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+                Salvar Música
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('add-song-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                titulo: form.titulo.value,
+                artista: form.artista.value,
+                album: form.album.value,
+                caminho_arquivo: form.caminho.value
+            };
+            
+            // Simulação de envio (substitua pela URL real do seu backend)
+            try {
+                const response = await fetch('http://localhost/player-de-musica/src/create_song.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(result.mensagem || 'Música adicionada com sucesso!');
+                    form.reset(); // Limpa o formulário após o envio
+                    
+                    // Aqui você pode adicionar a nova música à lista
+                    // Por simplicidade, apenas recarregamos a página
+                    // Em um projeto real, você adicionaria dinamicamente
+                    location.reload();
+                } else {
+                    alert('Erro ao adicionar música. Tente novamente.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro de conexão. Verifique se o servidor está rodando.');
+            }
+        });
+    </script>
 </body>
 </html>
