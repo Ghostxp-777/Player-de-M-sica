@@ -10,20 +10,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 
-// Os dados vêm do corpo da requisição
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Verificar se todos os dados necessários estão presentes
 if (!isset($data['id'], $data['titulo'], $data['artista'], $data['caminho_arquivo'])) {
     http_response_code(400);
     echo json_encode(['status' => 'erro', 'mensagem' => 'Dados inválidos. ID, título, artista e caminho_arquivo são obrigatórios.']);
     exit;
 }
 
+// Validar extensão do arquivo
+$allowedExtensions = ['.mp3', '.wav', '.ogg', '.m4a', '.aac', '.flac', '.wma'];
+$fileExtension = strtolower(strrchr($data['caminho_arquivo'], '.'));
+if (!in_array($fileExtension, $allowedExtensions)) {
+    http_response_code(400);
+    echo json_encode(['status' => 'erro', 'mensagem' => 'Tipo de arquivo não permitido. Use: .mp3, .wav, .ogg, .m4a, .aac, .flac ou .wma']);
+    exit;
+}
+
 $id = $data['id'];
 
 try {
-    // Comando SQL para atualizar uma música
     $sql = "UPDATE songs SET titulo = ?, artista = ?, album = ?, caminho_arquivo = ? WHERE id = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([

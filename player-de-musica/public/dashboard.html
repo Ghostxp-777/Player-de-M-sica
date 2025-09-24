@@ -6,21 +6,27 @@
     <title>Gerenciador de Músicas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .bg-primary { background-color: #1a202c; } /* gray-900 */
-        .bg-secondary { background-color: #2d3748; } /* gray-800 */
-        .bg-accent { background-color: #e53e3e; } /* red-600 */
-        .bg-accent-hover { background-color: #c53030; } /* red-700 */
-        .text-accent { color: #e53e3e; } /* red-600 */
-        .border-accent { border-color: #e53e3e; } /* red-600 */
+        .bg-primary { background-color: #1a202c; }
+        .bg-secondary { background-color: #2d3748; }
+        .bg-accent { background-color: #e53e3e; }
+        .bg-accent-hover { background-color: #c53030; }
+        .text-accent { color: #e53e3e; }
+        .border-accent { border-color: #e53e3e; }
         
-        /* Progress bar customizada */
         .progress-bar {
             background-color: #e53e3e;
         }
         
-        /* Highlight para música atual */
         .current-song {
             background-color: rgba(229, 62, 62, 0.1);
+        }
+        
+        .text-red-400 {
+            color: #f87171;
+        }
+        
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -101,7 +107,7 @@
                     </div>
                     <div>
                         <label for="caminho_arquivo" class="block text-sm font-medium text-white mb-1">Caminho do Arquivo *</label>
-                        <input type="text" id="caminho_arquivo" name="caminho_arquivo" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-accent transition-colors" required>
+                        <input type="text" id="caminho_arquivo" name="caminho_arquivo" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-accent transition-colors" required placeholder="Ex: musica.mp3 (apenas o nome do arquivo)">
                         <span id="caminho-error" class="text-red-400 text-xs hidden">O caminho do arquivo é obrigatório</span>
                     </div>
                 </div>
@@ -181,6 +187,87 @@
         let currentSearchTerm = '';
         let currentSortBy = 'titulo';
 
+        // ========== FUNÇÕES DE VALIDAÇÃO DE ARQUIVO ==========
+        // Função para validar se o arquivo é de áudio
+        function isValidAudioFile(filename) {
+            const audioExtensions = ['.mp3', '.wav', '.ogg', '.m4a', '.aac', '.flac', '.wma'];
+            const lowerFilename = filename.toLowerCase();
+            return audioExtensions.some(ext => lowerFilename.endsWith(ext));
+        }
+
+        // Função para verificar se o arquivo existe
+        async function checkFileExists(filePath) {
+            try {
+                const response = await fetch(filePath, { method: 'HEAD' });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+        // ========== FIM DAS FUNÇÕES DE VALIDAÇÃO ==========
+
+        // ========== FUNÇÃO PRINCIPAL PARA TOCAR MÚSICA ==========
+        // Função para tocar música (VERSÃO CORRIGIDA)
+        async function playSong(id) {
+            const song = allSongs.find(s => s.id == id);
+            if (song) {
+                // Garantir que estamos usando o caminho correto
+                const fileName = song.caminho_arquivo;
+                const filePath = `../music_files/${fileName}`;
+                
+                console.log('🎵 Tentando tocar:', fileName);
+                console.log('📁 Caminho completo:', filePath);
+                
+                try {
+                    // Verificar se o arquivo existe
+                    const fileExists = await checkFileExists(filePath);
+                    if (!fileExists) {
+                        alert(`❌ Arquivo não encontrado!\nArquivo: ${fileName}\nVerifique se o arquivo está na pasta "music_files"`);
+                        return;
+                    }
+                    
+                    currentSongIndex = allSongs.indexOf(song);
+                    
+                    // Configurar o player de áudio
+                    audioPlayer.src = filePath;
+                    
+                    // Configurar eventos
+                    audioPlayer.onerror = function() {
+                        alert(`❌ Erro de áudio!\nNão foi possível carregar: ${fileName}`);
+                        pauseSong();
+                    };
+                    
+                    audioPlayer.onloadstart = function() {
+                        console.log('⏳ Carregando áudio...');
+                    };
+                    
+                    audioPlayer.oncanplay = function() {
+                        console.log('✅ Áudio pronto para tocar!');
+                    };
+                    
+                    // Tentar reproduzir
+                    await audioPlayer.play();
+                    
+                    // Atualizar interface
+                    playerTitle.textContent = song.titulo;
+                    playerArtist.textContent = `- ${song.artista}`;
+                    playerAlbum.textContent = song.album || '';
+                    
+                    playButton.classList.add('hidden');
+                    pauseButton.classList.remove('hidden');
+                    
+                    highlightCurrentSong();
+                    
+                    console.log('🎶 Música tocando com sucesso!');
+                    
+                } catch (error) {
+                    console.error('Erro ao reproduzir:', error);
+                    alert(`❌ Erro ao reproduzir!\n${error.message}\n\nDica: Clique no botão Play novamente.`);
+                }
+            }
+        }
+        // ========== FIM DA FUNÇÃO DE TOCAR MÚSICA ==========
+
         // Função para carregar músicas com busca e ordenação
         async function fetchSongs(searchTerm = '', sortBy = 'titulo') {
             try {
@@ -230,25 +317,6 @@
                 console.error('Erro:', error);
                 const tableBody = document.getElementById('songs-table-body');
                 tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-red-500">Erro ao carregar músicas.</td></tr>';
-            }
-        }
-
-        // Função para tocar música
-        function playSong(id) {
-            const song = allSongs.find(s => s.id == id);
-            if (song) {
-                currentSongIndex = allSongs.indexOf(song);
-                audioPlayer.src = `../music_files/${song.caminho_arquivo}`;
-                audioPlayer.play();
-                
-                playerTitle.textContent = song.titulo;
-                playerArtist.textContent = `- ${song.artista}`;
-                playerAlbum.textContent = song.album || '';
-                
-                playButton.classList.add('hidden');
-                pauseButton.classList.remove('hidden');
-                
-                highlightCurrentSong();
             }
         }
 
@@ -305,8 +373,9 @@
             };
         }
 
+        // ========== FUNÇÃO DE VALIDAÇÃO DO FORMULÁRIO ==========
         // Função para validar formulário
-        function validateForm() {
+        async function validateForm() {
             let isValid = true;
             
             // Limpar erros anteriores
@@ -321,21 +390,32 @@
             
             if (!titulo) {
                 tituloError.classList.remove('hidden');
+                tituloError.textContent = 'O título é obrigatório';
                 isValid = false;
             }
             
             if (!artista) {
                 artistaError.classList.remove('hidden');
+                artistaError.textContent = 'O artista é obrigatório';
                 isValid = false;
             }
             
             if (!caminho) {
                 caminhoError.classList.remove('hidden');
+                caminhoError.textContent = 'O caminho do arquivo é obrigatório';
                 isValid = false;
+            } else {
+                // Validar extensão do arquivo
+                if (!isValidAudioFile(caminho)) {
+                    caminhoError.classList.remove('hidden');
+                    caminhoError.textContent = 'O arquivo deve ser .mp3, .wav, .ogg, .m4a, .aac, .flac ou .wma';
+                    isValid = false;
+                }
             }
             
             return isValid;
         }
+        // ========== FIM DA VALIDAÇÃO DO FORMULÁRIO ==========
 
         // Atualizar barra de progresso
         audioPlayer.addEventListener('timeupdate', () => {
@@ -353,16 +433,22 @@
         // Quando a música termina, tocar próxima
         audioPlayer.addEventListener('ended', nextSong);
 
+        // ========== EVENT LISTENER CORRIGIDO PARA O BOTÃO PLAY ==========
         // Event listeners do player
-        playButton.addEventListener('click', () => {
+        playButton.addEventListener('click', async () => {
             if (currentSongIndex !== -1) {
-                audioPlayer.play();
-                playButton.classList.add('hidden');
-                pauseButton.classList.remove('hidden');
+                try {
+                    await audioPlayer.play();
+                    playButton.classList.add('hidden');
+                    pauseButton.classList.remove('hidden');
+                } catch (error) {
+                    alert('🎵 Clique em Play novamente para iniciar a música.');
+                }
             } else if (allSongs.length > 0) {
                 playSong(allSongs[0].id);
             }
         });
+        // ========== FIM DO EVENT LISTENER CORRIGIDO ==========
 
         pauseButton.addEventListener('click', pauseSong);
         nextButton.addEventListener('click', nextSong);
@@ -418,6 +504,21 @@
                 alert('Erro de conexão. Verifique se o servidor está rodando.');
             }
         });
+
+        // ========== VALIDAÇÃO EM TEMPO REAL NO CAMPO DE ARQUIVO ==========
+        // Validação em tempo real para o campo de caminho do arquivo
+        document.getElementById('caminho_arquivo').addEventListener('blur', function() {
+            const caminho = this.value.trim();
+            if (caminho) {
+                if (!isValidAudioFile(caminho)) {
+                    caminhoError.classList.remove('hidden');
+                    caminhoError.textContent = 'O arquivo deve ser .mp3, .wav, .ogg, .m4a, .aac, .flac ou .wma';
+                } else {
+                    caminhoError.classList.add('hidden');
+                }
+            }
+        });
+        // ========== FIM DA VALIDAÇÃO EM TEMPO REAL ==========
 
         // Funções de edição e exclusão
         async function deleteSong(id) {
