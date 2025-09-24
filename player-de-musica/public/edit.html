@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,11 +18,13 @@
 
         <!-- Botão para voltar -->
         <div class="mb-6">
-            <a href="list.html" class="inline-flex items-center text-red-600 hover:text-red-500">
+            <a href="dashboard.html" class="inline-flex items-center text-red-600 hover:text-red-500">
                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd"
+                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                        clip-rule="evenodd"></path>
                 </svg>
-                Voltar para a Lista
+                Voltar para a Dashboard
             </a>
         </div>
 
@@ -29,32 +32,39 @@
         <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
             <form id="edit-song-form" class="space-y-4">
                 <input type="hidden" id="song-id" name="id">
-                
+
                 <div>
                     <label for="titulo" class="block text-sm font-medium text-white mb-1">Título</label>
-                    <input type="text" id="titulo" name="titulo" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" required>
+                    <input type="text" id="titulo" name="titulo"
+                        class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" required>
                 </div>
-                
+
                 <div>
                     <label for="artista" class="block text-sm font-medium text-white mb-1">Artista</label>
-                    <input type="text" id="artista" name="artista" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" required>
+                    <input type="text" id="artista" name="artista"
+                        class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" required>
                 </div>
-                
+
                 <div>
                     <label for="album" class="block text-sm font-medium text-white mb-1">Álbum</label>
-                    <input type="text" id="album" name="album" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white">
+                    <input type="text" id="album" name="album"
+                        class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white">
                 </div>
-                
+
                 <div>
-                    <label for="caminho_arquivo" class="block text-sm font-medium text-white mb-1">Caminho do Arquivo</label>
-                    <input type="text" id="caminho_arquivo" name="caminho_arquivo" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" required>
+                    <label for="caminho_arquivo" class="block text-sm font-medium text-white mb-1">Caminho do
+                        Arquivo</label>
+                    <input type="text" id="caminho_arquivo" name="caminho_arquivo"
+                        class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" required>
                 </div>
-                
+
                 <div class="flex space-x-4 pt-4">
-                    <button type="submit" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+                    <button type="submit"
+                        class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
                         Salvar Alterações
                     </button>
-                    <button type="button" onclick="window.location.href='list.html'" class="flex-1 bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+                    <button type="button" onclick="window.location.href='list.html'"
+                        class="flex-1 bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
                         Cancelar
                     </button>
                 </div>
@@ -70,22 +80,21 @@
         async function loadSongData() {
             const urlParams = new URLSearchParams(window.location.search);
             const songId = urlParams.get('id');
-            
+
             if (!songId) {
                 showMessage('ID da música não encontrado na URL.', 'error');
                 return;
             }
-            
+
             try {
-                // SIMULAÇÃO: Substitua pela URL real do seu backend
                 const response = await fetch(`http://localhost/player-de-musica/src/get_song.php?id=${songId}`);
-                
+
                 if (!response.ok) {
                     throw new Error('Erro ao carregar dados da música');
                 }
-                
+
                 const result = await response.json();
-                
+
                 if (result.status === 'sucesso' && result.data) {
                     const song = result.data;
                     document.getElementById('song-id').value = song.id;
@@ -96,16 +105,15 @@
                 } else {
                     showMessage('Música não encontrada.', 'error');
                 }
-                
+
             } catch (error) {
                 console.error('Erro:', error);
-                // SIMULAÇÃO: Dados de exemplo para teste
                 document.getElementById('song-id').value = urlParams.get('id');
                 document.getElementById('titulo').value = 'Música de Exemplo';
                 document.getElementById('artista').value = 'Artista Teste';
                 document.getElementById('album').value = 'Álbum Demo';
                 document.getElementById('caminho_arquivo').value = '/caminho/para/musica.mp3';
-                
+
                 showMessage('Usando dados de exemplo para demonstração.', 'info');
             }
         }
@@ -113,14 +121,16 @@
         // Função para enviar os dados atualizados
         async function updateSong(event) {
             event.preventDefault();
-            
+
             const form = event.target;
             const songId = document.getElementById('song-id').value;
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
-            
+
+            // Adicionar o ID aos dados (importante!)
+            data.id = songId;
+
             try {
-                // SIMULAÇÃO: Substitua pela URL real do seu backend
                 const response = await fetch('http://localhost/player-de-musica/src/update_song.php', {
                     method: 'POST',
                     headers: {
@@ -128,9 +138,9 @@
                     },
                     body: JSON.stringify(data)
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.status === 'sucesso') {
                     showMessage('Música atualizada com sucesso!', 'success');
                     setTimeout(() => {
@@ -139,14 +149,10 @@
                 } else {
                     showMessage('Erro ao atualizar música: ' + result.mensagem, 'error');
                 }
-                
+
             } catch (error) {
                 console.error('Erro:', error);
-                // SIMULAÇÃO: Mensagem de sucesso para teste
-                showMessage('Música atualizada com sucesso! (Simulação)', 'success');
-                setTimeout(() => {
-                    window.location.href = 'list.html';
-                }, 1500);
+                showMessage('Erro de conexão ao atualizar música.', 'error');
             }
         }
 
@@ -154,7 +160,7 @@
         function showMessage(message, type) {
             const messageDiv = document.getElementById('status-message');
             messageDiv.textContent = message;
-            
+
             if (type === 'success') {
                 messageDiv.className = 'mt-4 p-3 rounded bg-green-600 text-white';
             } else if (type === 'error') {
@@ -162,9 +168,9 @@
             } else {
                 messageDiv.className = 'mt-4 p-3 rounded bg-blue-600 text-white';
             }
-            
+
             messageDiv.classList.remove('hidden');
-            
+
             setTimeout(() => {
                 messageDiv.classList.add('hidden');
             }, 5000);
@@ -172,9 +178,10 @@
 
         // Event listeners
         document.getElementById('edit-song-form').addEventListener('submit', updateSong);
-        
+
         // Carregar dados quando a página for carregada
         document.addEventListener('DOMContentLoaded', loadSongData);
     </script>
 </body>
+
 </html>

@@ -1,18 +1,38 @@
 <?php
-    // Inclui o arquivo de conexão com o banco de dados
-    require_once('../config/database.php');
-    // Define o cabeçalho para indicar que a resposta será em JSON
-    header('Content-Type: application/json');
-    try {
-        // Comando SQL para selecionar todas as músicas
-        $sql = "SELECT id, titulo, artista, album, caminho_arquivo FROM songs ORDER BY data_adicao DESC";
-        // Executa a query e pega todos os resultados
-        $stmt = $pdo->query($sql);
-        $songs = $stmt->fetchAll();
-        // Retorna a lista de músicas em formato JSON
-        echo json_encode(['status' => 'sucesso', 'data' => $songs]);
-    } catch (\PDOException $e) {
-        http_response_code(500);
-        echo json_encode(['status' => 'erro', 'mensagem' => 'Erro ao listar as músicas: ' . $e->getMessage()]);
+require_once('../config/database.php');
+header('Content-Type: application/json');
+
+try {
+    // Pega o termo de busca da URL
+    $searchTerm = $_GET['search'] ?? '';
+    // Pega o parâmetro de ordenação (atividade de casa)
+    $sortBy = $_GET['sort'] ?? 'titulo';
+    
+    // Garante que o parâmetro de ordenação seja seguro
+    $allowedSorts = ['titulo', 'artista', 'album', 'data_adicao'];
+    if (!in_array($sortBy, $allowedSorts)) {
+        $sortBy = 'titulo';
     }
-?>
+    
+    $sql = "SELECT id, titulo, artista, album, caminho_arquivo FROM songs";
+    $params = [];
+    
+    // Se houver um termo de busca, adiciona a cláusula WHERE
+    if ($searchTerm) {
+        $sql .= " WHERE titulo LIKE ? OR artista LIKE ?";
+        $params[] = "%" . $searchTerm . "%";
+        $params[] = "%" . $searchTerm . "%";
+    }
+    
+    $sql .= " ORDER BY " . $sortBy . " ASC";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $songs = $stmt->fetchAll();
+    
+    echo json_encode(['status' => 'sucesso', 'data' => $songs]);
+} catch (\PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['status' => 'erro', 'mensagem' => 'Erro ao listar as músicas: ' . $e->getMessage()]);
+}
+?>  

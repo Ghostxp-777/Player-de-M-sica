@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Músicas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Personalização da paleta de cores */
+        .bg-primary { background-color: #1a202c; } /* gray-900 */
+        .bg-secondary { background-color: #2d3748; } /* gray-800 */
+        .bg-accent { background-color: #e53e3e; } /* red-600 */
+        .bg-accent-hover { background-color: #c53030; } /* red-700 */
+        .text-accent { color: #e53e3e; } /* red-600 */
+        .border-accent { border-color: #e53e3e; } /* red-600 */
+        
+        /* Progress bar customizada */
+        .progress-bar {
+            background-color: #e53e3e;
+        }
+        
+        /* Highlight para música atual */
+        .current-song {
+            background-color: rgba(229, 62, 62, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-primary text-white p-6">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold text-center text-white mb-8">Gerenciador de Músicas</h1>
+        
+        <!-- Player de Música -->
+        <div class="bg-secondary p-6 rounded-lg shadow-lg mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex-1">
+                    <div id="player-info" class="text-sm">
+                        <span class="font-bold text-white" id="player-title">Nenhuma música selecionada</span>
+                        <span class="text-gray-400 ml-2" id="player-artist"></span>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1" id="player-album"></div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="prev-button" class="bg-gray-600 hover:bg-gray-500 text-white font-bold p-2 rounded-full transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/>
+                        </svg>
+                    </button>
+                    
+                    <button id="play-button" class="bg-accent hover:bg-accent-hover text-white font-bold py-3 px-4 rounded-full transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    
+                    <button id="pause-button" class="hidden bg-accent-hover hover:bg-red-800 text-white font-bold py-3 px-4 rounded-full transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    
+                    <button id="next-button" class="bg-gray-600 hover:bg-gray-500 text-white font-bold p-2 rounded-full transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Barra de progresso -->
+            <div class="flex items-center space-x-3">
+                <span id="current-time" class="text-xs text-gray-400">0:00</span>
+                <div class="flex-1 bg-gray-700 rounded-full h-2">
+                    <div id="progress-bar" class="progress-bar h-2 rounded-full w-0"></div>
+                </div>
+                <span id="duration" class="text-xs text-gray-400">0:00</span>
+            </div>
+            
+            <audio id="audio-player" src="" class="hidden"></audio>
+        </div>
+
+        <!-- Formulário para adicionar música -->
+        <div class="bg-secondary p-6 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4">Adicionar Nova Música</h2>
+            <form id="add-song-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="titulo" class="block text-sm font-medium text-white mb-1">Título *</label>
+                        <input type="text" id="titulo" name="titulo" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-accent transition-colors" required>
+                        <span id="titulo-error" class="text-red-400 text-xs hidden">O título é obrigatório</span>
+                    </div>
+                    <div>
+                        <label for="artista" class="block text-sm font-medium text-white mb-1">Artista *</label>
+                        <input type="text" id="artista" name="artista" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-accent transition-colors" required>
+                        <span id="artista-error" class="text-red-400 text-xs hidden">O artista é obrigatório</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="album" class="block text-sm font-medium text-white mb-1">Álbum</label>
+                        <input type="text" id="album" name="album" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-accent transition-colors">
+                    </div>
+                    <div>
+                        <label for="caminho_arquivo" class="block text-sm font-medium text-white mb-1">Caminho do Arquivo *</label>
+                        <input type="text" id="caminho_arquivo" name="caminho_arquivo" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-accent transition-colors" required>
+                        <span id="caminho-error" class="text-red-400 text-xs hidden">O caminho do arquivo é obrigatório</span>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-accent hover:bg-accent-hover text-white font-bold py-3 px-4 rounded transition-colors duration-200">
+                    Adicionar Música
+                </button>
+            </form>
+        </div>
+
+        <!-- Controles de busca e ordenação -->
+        <div class="bg-secondary p-6 rounded-lg shadow-lg mb-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Campo de busca -->
+                <div class="flex-1">
+                    <input type="search" id="search-input" placeholder="Buscar por título ou artista..."
+                           class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-accent transition-colors">
+                </div>
+                
+                <!-- Seletor de ordenação -->
+                <div class="w-full md:w-64">
+                    <select id="sort-select" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-accent transition-colors">
+                        <option value="titulo">Ordenar por Título</option>
+                        <option value="artista">Ordenar por Artista</option>
+                        <option value="album">Ordenar por Álbum</option>
+                        <option value="data_adicao">Ordenar por Data</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de músicas -->
+        <div class="bg-secondary p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold text-white mb-4">Minha Playlist</h2>
+            <table class="w-full text-left">
+                <thead class="bg-gray-700">
+                    <tr>
+                        <th class="p-3 font-semibold text-white">Título</th>
+                        <th class="p-3 font-semibold text-white">Artista</th>
+                        <th class="p-3 font-semibold text-white">Álbum</th>
+                        <th class="p-3 font-semibold text-white">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="songs-table-body" class="divide-y divide-gray-700">
+                    <tr>
+                        <td colspan="4" class="p-4 text-center text-gray-500">Carregando músicas...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Elementos do player
+        const audioPlayer = document.getElementById('audio-player');
+        const playButton = document.getElementById('play-button');
+        const pauseButton = document.getElementById('pause-button');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const playerTitle = document.getElementById('player-title');
+        const playerArtist = document.getElementById('player-artist');
+        const playerAlbum = document.getElementById('player-album');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        const searchInput = document.getElementById('search-input');
+        const sortSelect = document.getElementById('sort-select');
+        const addSongForm = document.getElementById('add-song-form');
+
+        // Elementos de validação
+        const tituloError = document.getElementById('titulo-error');
+        const artistaError = document.getElementById('artista-error');
+        const caminhoError = document.getElementById('caminho-error');
+
+        // Variáveis globais
+        let allSongs = [];
+        let currentSongIndex = -1;
+        let currentSearchTerm = '';
+        let currentSortBy = 'titulo';
+
+        // Função para carregar músicas com busca e ordenação
+        async function fetchSongs(searchTerm = '', sortBy = 'titulo') {
+            try {
+                let url = `http://localhost/player-de-musica/src/list_songs.php?sort=${sortBy}`;
+                if (searchTerm) {
+                    url += `&search=${encodeURIComponent(searchTerm)}`;
+                }
+                
+                const response = await fetch(url);
+                const result = await response.json();
+                const tableBody = document.getElementById('songs-table-body');
+                tableBody.innerHTML = '';
+                
+                if (result.status === 'sucesso' && result.data.length > 0) {
+                    allSongs = result.data;
+                    
+                    result.data.forEach((song) => {
+                        const row = document.createElement('tr');
+                        row.className = 'hover:bg-gray-750 transition-colors';
+                        row.innerHTML = `
+                            <td class="p-3 text-white">${song.titulo}</td>
+                            <td class="p-3 text-gray-300">${song.artista}</td>
+                            <td class="p-3 text-gray-400">${song.album || 'N/A'}</td>
+                            <td class="p-3">
+                                <button onclick="playSong(${song.id})" class="bg-accent hover:bg-accent-hover text-white font-bold py-1 px-3 rounded text-xs transition-colors duration-200">
+                                    Play
+                                </button>
+                                <button onclick="editSong(${song.id})" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-1 px-3 rounded text-xs transition-colors duration-200 ml-2">
+                                    Editar
+                                </button>
+                                <button onclick="deleteSong(${song.id})" class="bg-red-700 hover:bg-red-800 text-white font-bold py-1 px-3 rounded text-xs transition-colors duration-200 ml-2">
+                                    Excluir
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                    
+                    // Reaplica o destaque na música atual após recarregar
+                    if (currentSongIndex !== -1) {
+                        highlightCurrentSong();
+                    }
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-gray-500">Nenhuma música encontrada.</td></tr>';
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                const tableBody = document.getElementById('songs-table-body');
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-red-500">Erro ao carregar músicas.</td></tr>';
+            }
+        }
+
+        // Função para tocar música
+        function playSong(id) {
+            const song = allSongs.find(s => s.id == id);
+            if (song) {
+                currentSongIndex = allSongs.indexOf(song);
+                audioPlayer.src = `../music_files/${song.caminho_arquivo}`;
+                audioPlayer.play();
+                
+                playerTitle.textContent = song.titulo;
+                playerArtist.textContent = `- ${song.artista}`;
+                playerAlbum.textContent = song.album || '';
+                
+                playButton.classList.add('hidden');
+                pauseButton.classList.remove('hidden');
+                
+                highlightCurrentSong();
+            }
+        }
+
+        // Função para próxima música
+        function nextSong() {
+            if (allSongs.length === 0) return;
+            currentSongIndex = (currentSongIndex + 1) % allSongs.length;
+            playSong(allSongs[currentSongIndex].id);
+        }
+
+        // Função para música anterior
+        function prevSong() {
+            if (allSongs.length === 0) return;
+            currentSongIndex = (currentSongIndex - 1 + allSongs.length) % allSongs.length;
+            playSong(allSongs[currentSongIndex].id);
+        }
+
+        // Função para pausar música
+        function pauseSong() {
+            audioPlayer.pause();
+            playButton.classList.remove('hidden');
+            pauseButton.classList.add('hidden');
+        }
+
+        // Função para destacar a música atual na tabela
+        function highlightCurrentSong() {
+            const rows = document.querySelectorAll('#songs-table-body tr');
+            rows.forEach((row, index) => {
+                if (index === currentSongIndex) {
+                    row.classList.add('current-song');
+                } else {
+                    row.classList.remove('current-song');
+                }
+            });
+        }
+
+        // Função para formatar tempo
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        // Debounce function para evitar muitas requisições durante a digitação
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Função para validar formulário
+        function validateForm() {
+            let isValid = true;
+            
+            // Limpar erros anteriores
+            tituloError.classList.add('hidden');
+            artistaError.classList.add('hidden');
+            caminhoError.classList.add('hidden');
+            
+            // Validar campos obrigatórios
+            const titulo = document.getElementById('titulo').value.trim();
+            const artista = document.getElementById('artista').value.trim();
+            const caminho = document.getElementById('caminho_arquivo').value.trim();
+            
+            if (!titulo) {
+                tituloError.classList.remove('hidden');
+                isValid = false;
+            }
+            
+            if (!artista) {
+                artistaError.classList.remove('hidden');
+                isValid = false;
+            }
+            
+            if (!caminho) {
+                caminhoError.classList.remove('hidden');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        // Atualizar barra de progresso
+        audioPlayer.addEventListener('timeupdate', () => {
+            const currentTime = audioPlayer.currentTime;
+            const duration = audioPlayer.duration;
+            
+            if (duration) {
+                const progressPercent = (currentTime / duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                currentTimeEl.textContent = formatTime(currentTime);
+                durationEl.textContent = formatTime(duration);
+            }
+        });
+
+        // Quando a música termina, tocar próxima
+        audioPlayer.addEventListener('ended', nextSong);
+
+        // Event listeners do player
+        playButton.addEventListener('click', () => {
+            if (currentSongIndex !== -1) {
+                audioPlayer.play();
+                playButton.classList.add('hidden');
+                pauseButton.classList.remove('hidden');
+            } else if (allSongs.length > 0) {
+                playSong(allSongs[0].id);
+            }
+        });
+
+        pauseButton.addEventListener('click', pauseSong);
+        nextButton.addEventListener('click', nextSong);
+        prevButton.addEventListener('click', prevSong);
+
+        // Event listeners para busca e ordenação
+        searchInput.addEventListener('input', debounce((event) => {
+            currentSearchTerm = event.target.value;
+            fetchSongs(currentSearchTerm, currentSortBy);
+        }, 300));
+
+        sortSelect.addEventListener('change', (event) => {
+            currentSortBy = event.target.value;
+            fetchSongs(currentSearchTerm, currentSortBy);
+        });
+
+        // Event listener para o formulário de adição
+        addSongForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Validar formulário
+            if (!validateForm()) {
+                return;
+            }
+            
+            const formData = new FormData(addSongForm);
+            const data = {
+                titulo: formData.get('titulo'),
+                artista: formData.get('artista'),
+                album: formData.get('album'),
+                caminho_arquivo: formData.get('caminho_arquivo')
+            };
+            
+            try {
+                const response = await fetch('http://localhost/player-de-musica/src/create_song.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(result.mensagem || 'Música adicionada com sucesso!');
+                    addSongForm.reset();
+                    
+                    // Recarregar a lista de músicas
+                    fetchSongs(currentSearchTerm, currentSortBy);
+                } else {
+                    alert('Erro ao adicionar música. Tente novamente.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro de conexão. Verifique se o servidor está rodando.');
+            }
+        });
+
+        // Funções de edição e exclusão
+        async function deleteSong(id) {
+            if (!confirm('Tem certeza que deseja excluir esta música?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost/player-de-musica/src/delete_song.php?id=${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                alert(result.mensagem);
+                fetchSongs(currentSearchTerm, currentSortBy);
+                
+                if (currentSongIndex !== -1 && allSongs[currentSongIndex] && allSongs[currentSongIndex].id == id) {
+                    audioPlayer.pause();
+                    audioPlayer.src = '';
+                    playerTitle.textContent = 'Nenhuma música selecionada';
+                    playerArtist.textContent = '';
+                    playerAlbum.textContent = '';
+                    playButton.classList.remove('hidden');
+                    pauseButton.classList.add('hidden');
+                    currentSongIndex = -1;
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao excluir música. Verifique a conexão com o servidor.');
+            }
+        }
+
+        function editSong(id) {
+            window.location.href = `edit.html?id=${id}`;
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchSongs();
+        });
+    </script>
+</body>
+</html>
