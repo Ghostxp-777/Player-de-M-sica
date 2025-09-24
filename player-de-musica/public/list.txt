@@ -11,7 +11,6 @@
     <div class="max-w-5xl mx-auto">
         <h1 class="text-3xl font-bold text-white mb-6">Minhas Músicas</h1>
         
-        <!-- Player de Música -->
         <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex-1">
@@ -49,7 +48,6 @@
                 </div>
             </div>
             
-            <!-- Barra de progresso -->
             <div class="flex items-center space-x-3">
                 <span id="current-time" class="text-xs text-gray-400">0:00</span>
                 <div class="flex-1 bg-gray-700 rounded-full h-2">
@@ -61,16 +59,13 @@
             <audio id="audio-player" src="" class="hidden"></audio>
         </div>
 
-        <!-- Controles de busca e ordenação -->
         <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
             <div class="flex flex-col md:flex-row gap-4">
-                <!-- Campo de busca -->
                 <div class="flex-1">
                     <input type="search" id="search-input" placeholder="Buscar por título ou artista..."
                            class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-teal-500 transition-colors">
                 </div>
                 
-                <!-- Seletor de ordenação (Atividade de Casa) -->
                 <div class="w-full md:w-64">
                     <select id="sort-select" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-teal-500 transition-colors">
                         <option value="titulo">Ordenar por Título</option>
@@ -82,7 +77,6 @@
             </div>
         </div>
 
-        <!-- Tabela de músicas -->
         <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
             <table class="w-full text-left">
                 <thead class="bg-gray-700">
@@ -112,7 +106,6 @@
     </div>
 
     <script>
-        // Elementos do player
         const audioPlayer = document.getElementById('audio-player');
         const playButton = document.getElementById('play-button');
         const pauseButton = document.getElementById('pause-button');
@@ -127,13 +120,11 @@
         const searchInput = document.getElementById('search-input');
         const sortSelect = document.getElementById('sort-select');
 
-        // Variáveis globais
         let allSongs = [];
         let currentSongIndex = -1;
         let currentSearchTerm = '';
         let currentSortBy = 'titulo';
 
-        // Função para carregar músicas com busca e ordenação
         async function fetchSongs(searchTerm = '', sortBy = 'titulo') {
             try {
                 let url = `http://localhost/player-de-musica/src/list_songs.php?sort=${sortBy}`;
@@ -171,7 +162,6 @@
                         tableBody.appendChild(row);
                     });
                     
-                    // Reaplica o destaque na música atual após recarregar
                     if (currentSongIndex !== -1) {
                         highlightCurrentSong();
                     }
@@ -185,7 +175,6 @@
             }
         }
 
-        // Função para tocar música
         function playSong(id) {
             const song = allSongs.find(s => s.id == id);
             if (song) {
@@ -204,28 +193,24 @@
             }
         }
 
-        // Função para próxima música
         function nextSong() {
             if (allSongs.length === 0) return;
             currentSongIndex = (currentSongIndex + 1) % allSongs.length;
             playSong(allSongs[currentSongIndex].id);
         }
 
-        // Função para música anterior
         function prevSong() {
             if (allSongs.length === 0) return;
             currentSongIndex = (currentSongIndex - 1 + allSongs.length) % allSongs.length;
             playSong(allSongs[currentSongIndex].id);
         }
 
-        // Função para pausar música
         function pauseSong() {
             audioPlayer.pause();
             playButton.classList.remove('hidden');
             pauseButton.classList.add('hidden');
         }
 
-        // Função para destacar a música atual na tabela
         function highlightCurrentSong() {
             const rows = document.querySelectorAll('#songs-table-body tr');
             rows.forEach((row, index) => {
@@ -237,14 +222,12 @@
             });
         }
 
-        // Função para formatar tempo
         function formatTime(seconds) {
             const min = Math.floor(seconds / 60);
             const sec = Math.floor(seconds % 60);
             return `${min}:${sec.toString().padStart(2, '0')}`;
         }
 
-        // Debounce function para evitar muitas requisições durante a digitação
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
@@ -257,7 +240,6 @@
             };
         }
 
-        // Atualizar barra de progresso
         audioPlayer.addEventListener('timeupdate', () => {
             const currentTime = audioPlayer.currentTime;
             const duration = audioPlayer.duration;
@@ -270,10 +252,8 @@
             }
         });
 
-        // Quando a música termina, tocar próxima
         audioPlayer.addEventListener('ended', nextSong);
 
-        // Event listeners do player
         playButton.addEventListener('click', () => {
             if (currentSongIndex !== -1) {
                 audioPlayer.play();
@@ -288,7 +268,6 @@
         nextButton.addEventListener('click', nextSong);
         prevButton.addEventListener('click', prevSong);
 
-        // Event listeners para busca e ordenação
         searchInput.addEventListener('input', debounce((event) => {
             currentSearchTerm = event.target.value;
             fetchSongs(currentSearchTerm, currentSortBy);
@@ -299,7 +278,6 @@
             fetchSongs(currentSearchTerm, currentSortBy);
         });
 
-        // Funções de edição e exclusão
         async function deleteSong(id) {
             if (!confirm('Tem certeza que deseja excluir esta música?')) {
                 return;
@@ -335,7 +313,6 @@
             window.location.href = `edit.html?id=${id}`;
         }
 
-        // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             fetchSongs();
         });
