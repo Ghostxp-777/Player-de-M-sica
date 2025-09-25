@@ -187,7 +187,6 @@
         let currentSearchTerm = '';
         let currentSortBy = 'titulo';
 
-        // ========== FUNÇÕES DE VALIDAÇÃO DE ARQUIVO ==========
         // Função para validar se o arquivo é de áudio
         function isValidAudioFile(filename) {
             const audioExtensions = ['.mp3', '.wav', '.ogg', '.m4a', '.aac', '.flac', '.wma'];
@@ -204,9 +203,7 @@
                 return false;
             }
         }
-        // ========== FIM DAS FUNÇÕES DE VALIDAÇÃO ==========
 
-        // ========== FUNÇÃO PRINCIPAL PARA TOCAR MÚSICA ==========
         // Função para tocar música (VERSÃO CORRIGIDA)
         async function playSong(id) {
             const song = allSongs.find(s => s.id == id);
@@ -215,14 +212,14 @@
                 const fileName = song.caminho_arquivo;
                 const filePath = `../music_files/${fileName}`;
                 
-                console.log('🎵 Tentando tocar:', fileName);
-                console.log('📁 Caminho completo:', filePath);
+                console.log('Tentando tocar:', fileName);
+                console.log('Caminho completo:', filePath);
                 
                 try {
                     // Verificar se o arquivo existe
                     const fileExists = await checkFileExists(filePath);
                     if (!fileExists) {
-                        alert(`❌ Arquivo não encontrado!\nArquivo: ${fileName}\nVerifique se o arquivo está na pasta "music_files"`);
+                        alert(`Arquivo não encontrado!\nArquivo: ${fileName}\nVerifique se o arquivo está na pasta "music_files"`);
                         return;
                     }
                     
@@ -233,16 +230,16 @@
                     
                     // Configurar eventos
                     audioPlayer.onerror = function() {
-                        alert(`❌ Erro de áudio!\nNão foi possível carregar: ${fileName}`);
+                        alert(`Erro de áudio!\nNão foi possível carregar: ${fileName}`);
                         pauseSong();
                     };
                     
                     audioPlayer.onloadstart = function() {
-                        console.log('⏳ Carregando áudio...');
+                        console.log('Carregando áudio...');
                     };
                     
                     audioPlayer.oncanplay = function() {
-                        console.log('✅ Áudio pronto para tocar!');
+                        console.log('Áudio pronto para tocar!');
                     };
                     
                     // Tentar reproduzir
@@ -262,11 +259,10 @@
                     
                 } catch (error) {
                     console.error('Erro ao reproduzir:', error);
-                    alert(`❌ Erro ao reproduzir!\n${error.message}\n\nDica: Clique no botão Play novamente.`);
+                    alert(`Erro ao reproduzir!\n${error.message}\n\nDica: Clique no botão Play novamente.`);
                 }
             }
         }
-        // ========== FIM DA FUNÇÃO DE TOCAR MÚSICA ==========
 
         // Função para carregar músicas com busca e ordenação
         async function fetchSongs(searchTerm = '', sortBy = 'titulo') {
@@ -373,7 +369,6 @@
             };
         }
 
-        // ========== FUNÇÃO DE VALIDAÇÃO DO FORMULÁRIO ==========
         // Função para validar formulário
         async function validateForm() {
             let isValid = true;
@@ -415,7 +410,6 @@
             
             return isValid;
         }
-        // ========== FIM DA VALIDAÇÃO DO FORMULÁRIO ==========
 
         // Atualizar barra de progresso
         audioPlayer.addEventListener('timeupdate', () => {
@@ -433,7 +427,6 @@
         // Quando a música termina, tocar próxima
         audioPlayer.addEventListener('ended', nextSong);
 
-        // ========== EVENT LISTENER CORRIGIDO PARA O BOTÃO PLAY ==========
         // Event listeners do player
         playButton.addEventListener('click', async () => {
             if (currentSongIndex !== -1) {
@@ -448,7 +441,6 @@
                 playSong(allSongs[0].id);
             }
         });
-        // ========== FIM DO EVENT LISTENER CORRIGIDO ==========
 
         pauseButton.addEventListener('click', pauseSong);
         nextButton.addEventListener('click', nextSong);
@@ -505,7 +497,6 @@
             }
         });
 
-        // ========== VALIDAÇÃO EM TEMPO REAL NO CAMPO DE ARQUIVO ==========
         // Validação em tempo real para o campo de caminho do arquivo
         document.getElementById('caminho_arquivo').addEventListener('blur', function() {
             const caminho = this.value.trim();
@@ -518,7 +509,6 @@
                 }
             }
         });
-        // ========== FIM DA VALIDAÇÃO EM TEMPO REAL ==========
 
         // Funções de edição e exclusão
         async function deleteSong(id) {
